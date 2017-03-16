@@ -79,7 +79,6 @@ class StoreApi
     public function deleteOrder($order_id)
     {
         $this->deleteOrderWithHttpInfo($order_id);
-        
     }
 
     /**
@@ -121,12 +120,11 @@ class StoreApi
         if (isset($_tempBody)) {
             $httpBody = $_tempBody; // $_tempBody is the method argument, if present
         } elseif (count($formParams) > 0) {
-            $httpBody = $formParams; // for HTTP post (form)
+            $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
         }
 /**
 */
-
-        $query = http_build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
         try {
             $request = new Request(
@@ -206,7 +204,7 @@ class StoreApi
         if (isset($_tempBody)) {
             $httpBody = $_tempBody; // $_tempBody is the method argument, if present
         } elseif (count($formParams) > 0) {
-            $httpBody = $formParams; // for HTTP post (form)
+            $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
         }
 /**
         // this endpoint requires API key authentication
@@ -215,8 +213,7 @@ class StoreApi
             $headerParams['api_key'] = $apiKey;
         }
 */
-
-        $query = http_build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
         try {
             $request = new Request(
@@ -322,12 +319,11 @@ class StoreApi
         if (isset($_tempBody)) {
             $httpBody = $_tempBody; // $_tempBody is the method argument, if present
         } elseif (count($formParams) > 0) {
-            $httpBody = $formParams; // for HTTP post (form)
+            $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
         }
 /**
 */
-
-        $query = http_build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
         try {
             $request = new Request(
@@ -427,12 +423,11 @@ class StoreApi
         if (isset($_tempBody)) {
             $httpBody = $_tempBody; // $_tempBody is the method argument, if present
         } elseif (count($formParams) > 0) {
-            $httpBody = $formParams; // for HTTP post (form)
+            $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
         }
 /**
 */
-
-        $query = http_build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
         try {
             $request = new Request(
