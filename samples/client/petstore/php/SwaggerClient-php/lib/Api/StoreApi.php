@@ -136,12 +136,15 @@ class StoreApi
 */
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/xml', 'application/json'],
-            []
-        );
         if ($httpBody instanceof MultipartStream) {
-            unset($headers['Content-Type']);
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/xml', 'application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/xml', 'application/json'],
+                []
+            );
         }
 
         try {
@@ -242,12 +245,15 @@ class StoreApi
 */
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json'],
-            []
-        );
         if ($httpBody instanceof MultipartStream) {
-            unset($headers['Content-Type']);
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/json'],
+                []
+            );
         }
 
         try {
@@ -372,12 +378,15 @@ class StoreApi
 */
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/xml', 'application/json'],
-            []
-        );
         if ($httpBody instanceof MultipartStream) {
-            unset($headers['Content-Type']);
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/xml', 'application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/xml', 'application/json'],
+                []
+            );
         }
 
         try {
@@ -496,12 +505,15 @@ class StoreApi
 */
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/xml', 'application/json'],
-            []
-        );
         if ($httpBody instanceof MultipartStream) {
-            unset($headers['Content-Type']);
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/xml', 'application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/xml', 'application/json'],
+                []
+            );
         }
 
         try {
