@@ -31,10 +31,10 @@ namespace Swagger\Client\Api;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use Http\Client\Exception;
+use Http\Client\Exception\NetworkException;
 use Http\Client\HttpClient;
 use Swagger\Client\ApiException;
-use Swagger\Client\AuthConfig;
+use Swagger\Client\Configuration;
 use Swagger\Client\HeaderSelector;
 use Swagger\Client\ObjectSerializer;
 
@@ -59,34 +59,34 @@ class StoreApi
     protected $serializer;
 
     /**
-     * @var AuthConfig
+     * @var Configuration
      */
-    protected $authConfig;
+    protected $config;
 
     /**
      * @param HttpClient $client
      * @param HeaderSelector $selector
      * @param ObjectSerializer $serializer
-     * @param AuthConfig $authConfig
+     * @param Configuration $config
      */
     public function __construct(
         HttpClient $client,
-        AuthConfig $authConfig = null,
+        Configuration $config = null,
         HeaderSelector $selector = null,
         ObjectSerializer $serializer = null
     ) {
         $this->client = $client;
         $this->serializer = $serializer ?: new ObjectSerializer();
         $this->headerSelector = $selector ?: new HeaderSelector();
-        $this->authConfig = $authConfig ?: new AuthConfig();
+        $this->config = $config ?: new Configuration();
     }
 
     /**
-     * @return AuthConfig
+     * @return Config
      */
-    public function getAuthConfig()
+    public function getConfig()
     {
-        return $this->authConfig;
+        return $this->config;
     }
 
     /**
@@ -121,7 +121,7 @@ class StoreApi
             throw new \InvalidArgumentException('Missing the required parameter $order_id when calling deleteOrder');
         }
 
-        $resourcePath = substr('/store/order/{orderId}', 1);
+        $resourcePath = '/store/order/{orderId}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -170,19 +170,24 @@ class StoreApi
 
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
         $headers = array_merge($headerParams, $headers);
+        $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
 
+        $request = new Request(
+            'DELETE',
+            $url,
+            $headers,
+            $httpBody
+        );
         try {
-            $request = new Request(
-                'DELETE',
-                Uri::composeComponents('', '', $resourcePath, $query, ''),
-                $headers,
-                $httpBody
-            );
             $response = $this->client->sendRequest($request);
-            return [null, $response->getStatusCode(), $response->getHeaders()];
-        } catch (Exception $exception) {
-            throw new ApiException($exception->getMessage(), null, $exception);
+        } catch (NetworkException $e) {
+            throw new ApiException($e->getMessage(), null, $e);
         }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new ApiException("[{$response->getStatusCode()}] Error connecting to the API ($url)", $response->getStatusCode());
+        }
+        return [null, $response->getStatusCode(), $response->getHeaders()];
 /**
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -231,7 +236,7 @@ class StoreApi
     public function getInventoryWithHttpInfo()
     {
 
-        $resourcePath = substr('/store/inventory', 1);
+        $resourcePath = '/store/inventory';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -274,34 +279,39 @@ class StoreApi
         }
 
         // this endpoint requires API key authentication
-        $apiKey = $this->authConfig->getApiKeyWithPrefix('api_key');
+        $apiKey = $this->config->getApiKeyWithPrefix('api_key');
         if ($apiKey !== null) {
             $headers['api_key'] = $apiKey;
         }
 
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
         $headers = array_merge($headerParams, $headers);
+        $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
 
+        $request = new Request(
+            'GET',
+            $url,
+            $headers,
+            $httpBody
+        );
         try {
-            $request = new Request(
-                'GET',
-                Uri::composeComponents('', '', $resourcePath, $query, ''),
-                $headers,
-                $httpBody
-            );
             $response = $this->client->sendRequest($request);
-            $content = $response->getBody()->getContents();
-            if ($returnType !== 'string') { //TODO return type file
-                $content = json_decode($content);
-            }
-            return [
-                ObjectSerializer::deserialize($content, 'map[string,int]', []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-        } catch (Exception $exception) {
-            throw new ApiException($exception->getMessage(), null, $exception);
+        } catch (NetworkException $e) {
+            throw new ApiException($e->getMessage(), null, $e);
         }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new ApiException("[{$response->getStatusCode()}] Error connecting to the API ($url)", $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+        if ($returnType !== 'string') { //TODO return type file
+            $content = json_decode($content);
+        }
+        return [
+            ObjectSerializer::deserialize($content, 'map[string,int]', []),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        ];
 /**
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -367,7 +377,7 @@ class StoreApi
         }
 
 
-        $resourcePath = substr('/store/order/{orderId}', 1);
+        $resourcePath = '/store/order/{orderId}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -416,27 +426,32 @@ class StoreApi
 
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
         $headers = array_merge($headerParams, $headers);
+        $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
 
+        $request = new Request(
+            'GET',
+            $url,
+            $headers,
+            $httpBody
+        );
         try {
-            $request = new Request(
-                'GET',
-                Uri::composeComponents('', '', $resourcePath, $query, ''),
-                $headers,
-                $httpBody
-            );
             $response = $this->client->sendRequest($request);
-            $content = $response->getBody()->getContents();
-            if ($returnType !== 'string') { //TODO return type file
-                $content = json_decode($content);
-            }
-            return [
-                ObjectSerializer::deserialize($content, '\Swagger\Client\Model\Order', []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-        } catch (Exception $exception) {
-            throw new ApiException($exception->getMessage(), null, $exception);
+        } catch (NetworkException $e) {
+            throw new ApiException($e->getMessage(), null, $e);
         }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new ApiException("[{$response->getStatusCode()}] Error connecting to the API ($url)", $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+        if ($returnType !== 'string') { //TODO return type file
+            $content = json_decode($content);
+        }
+        return [
+            ObjectSerializer::deserialize($content, '\Swagger\Client\Model\Order', []),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        ];
 /**
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
@@ -495,7 +510,7 @@ class StoreApi
             throw new \InvalidArgumentException('Missing the required parameter $body when calling placeOrder');
         }
 
-        $resourcePath = substr('/store/order', 1);
+        $resourcePath = '/store/order';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -545,27 +560,32 @@ class StoreApi
 
         $query = \GuzzleHttp\Psr7\build_query($queryParams);
         $headers = array_merge($headerParams, $headers);
+        $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
 
+        $request = new Request(
+            'POST',
+            $url,
+            $headers,
+            $httpBody
+        );
         try {
-            $request = new Request(
-                'POST',
-                Uri::composeComponents('', '', $resourcePath, $query, ''),
-                $headers,
-                $httpBody
-            );
             $response = $this->client->sendRequest($request);
-            $content = $response->getBody()->getContents();
-            if ($returnType !== 'string') { //TODO return type file
-                $content = json_decode($content);
-            }
-            return [
-                ObjectSerializer::deserialize($content, '\Swagger\Client\Model\Order', []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-        } catch (Exception $exception) {
-            throw new ApiException($exception->getMessage(), null, $exception);
+        } catch (NetworkException $e) {
+            throw new ApiException($e->getMessage(), null, $e);
         }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new ApiException("[{$response->getStatusCode()}] Error connecting to the API ($url)", $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+        if ($returnType !== 'string') { //TODO return type file
+            $content = json_decode($content);
+        }
+        return [
+            ObjectSerializer::deserialize($content, '\Swagger\Client\Model\Order', []),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        ];
 /**
         try {
             list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
